@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"simple-api-go-c0rz/user"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -16,7 +17,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	_ = user.ConnectDB(db)
+	usersModels := user.ConnectDB(db)
+	userSerivce := user.NewService(usersModels)
+	userHandler := user.NewUserHandler(userSerivce)
 
-	fmt.Println("Connected")
+	router := gin.Default()
+	router.Use(cors.Default())
+
+	api := router.Group("/api/v1")
+
+	api.GET("/")
+
+	router.Run(":8080")
 }
