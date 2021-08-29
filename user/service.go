@@ -1,7 +1,7 @@
 package user
 
 type Service interface {
-	getAllUser() ([]User, error)
+	GetAllUser() ([]User, error)
 }
 
 type service struct {
@@ -12,7 +12,7 @@ func NewService(models Models) *service {
 	return &service{models}
 }
 
-func (s *service) GetAllUsers() ([]User, error) {
+func (s *service) GetAllUser() ([]User, error) {
 	users, err := s.models.GetAll()
 	if err != nil {
 		return users, err

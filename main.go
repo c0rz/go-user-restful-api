@@ -18,15 +18,15 @@ func main() {
 		log.Fatal(err.Error())
 	}
 	usersModels := user.ConnectDB(db)
-	userSerivce := user.NewService(usersModels)
-	userHandler := user.NewUserHandler(userSerivce)
+	userSerivces := user.NewService(usersModels)
+	userControllers := user.Controllers(userSerivces)
 
 	router := gin.Default()
 	router.Use(cors.Default())
 
 	api := router.Group("/api/v1")
 
-	api.GET("/")
+	api.GET("/list", userControllers.GetUsers)
 
 	router.Run(":8080")
 }
