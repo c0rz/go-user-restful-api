@@ -27,6 +27,7 @@ func main() {
 	api := router.Group("/api/v1")
 
 	api.GET("/list", userControllers.GetUsers)
+	api.PUT("/list", userControllers.GetUsers)
 
 	router.Run(":8080")
 }

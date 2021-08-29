@@ -23,3 +23,12 @@ func (r *models) GetAll() ([]User, error) {
 	}
 	return users, nil
 }
+
+func (r *models) Insert(user User) (User, error) {
+	err := r.db.Create(&user).Error
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
