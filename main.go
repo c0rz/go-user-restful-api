@@ -27,7 +27,8 @@ func main() {
 	api := router.Group("/api/v1")
 
 	api.GET("/list", userControllers.GetUsers)
-	api.PUT("/list", userControllers.GetUsers)
+	api.PUT("/create", userControllers.RegisUser)
+	router.NoRoute(userControllers.NotFound)
 
 	router.Run(":8080")
 }

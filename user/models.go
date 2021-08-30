@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 type Models interface {
 	GetAll() ([]User, error)
+	Insert(user User) (User, error)
 }
 
 type models struct {

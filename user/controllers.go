@@ -16,13 +16,31 @@ func Controllers(userSerivce Service) *userHandler {
 
 }
 
-func (s *userHandler) GetUsers(c *gin.Context) {
-	getAll, err := s.userSerivce.GetAllUser()
+func (s *userHandler) RegisUser(c *gin.Context) {
+	var input RegisterUserInput
+
+	err := c.ShouldBindJSON(&input)
 	if err != nil {
-		response := helper.APIResponse("Register account failed", http.StatusUnprocessableEntity, "error")
+		response := helper.APIResponse("Error Data", http.StatusBadRequest, nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	response := helper.APIResponse("Mantap anjeng", http.StatusOK, getAll)
+	response := helper.APIResponse("Mantap anjeng", http.StatusOK, nil)
 	c.JSON(http.StatusOK, response)
+}
+
+func (s *userHandler) GetUsers(c *gin.Context) {
+	getAll, err := s.userSerivce.GetAllUser()
+	if err != nil {
+		response := helper.APIResponse("fail API", http.StatusBadRequest, nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	response := helper.APIResponse("success API", http.StatusOK, getAll)
+	c.JSON(http.StatusOK, response)
+}
+
+func (s *userHandler) NotFound(c *gin.Context) {
+	response := helper.APIResponse("fail API", http.StatusNotFound, nil)
+	c.JSON(http.StatusNotFound, response)
 }
