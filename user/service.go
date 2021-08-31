@@ -4,6 +4,7 @@ import "golang.org/x/crypto/bcrypt"
 
 type Service interface {
 	GetAllUser() ([]User, error)
+	RegisterUser(input RegisterUserInput) (User, error)
 }
 
 type service struct {

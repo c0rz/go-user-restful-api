@@ -22,13 +22,13 @@ func main() {
 	userControllers := user.Controllers(userSerivces)
 
 	router := gin.Default()
+	router.NoRoute(userControllers.NotFound)
 	router.Use(cors.Default())
 
 	api := router.Group("/api/v1")
 
 	api.GET("/list", userControllers.GetUsers)
-	api.PUT("/create", userControllers.RegisUser)
-	router.NoRoute(userControllers.NotFound)
+	api.POST("/create", userControllers.RegisUser)
 
 	router.Run(":8080")
 }
