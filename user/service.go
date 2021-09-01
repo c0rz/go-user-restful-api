@@ -5,6 +5,7 @@ import "golang.org/x/crypto/bcrypt"
 type Service interface {
 	GetAllUser() ([]User, error)
 	RegisterUser(input RegisterUserInput) (User, error)
+	CountUser(kolom string, data string) (bool, error)
 }
 
 type service struct {
@@ -42,4 +43,17 @@ func (s *service) GetAllUser() ([]User, error) {
 	}
 
 	return users, nil
+}
+
+func (s *service) CountUser(kolom string, data string) (bool, error) {
+	users, err := s.models.Search(kolom, data)
+	if err != nil {
+		return false, err
+	}
+
+	if users.ID == 0 {
+		return true, nil
+	}
+
+	return false, nil
 }

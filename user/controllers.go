@@ -22,44 +22,51 @@ func (s *userHandler) RegisUser(c *gin.Context) {
 	err := c.Bind(&input)
 
 	if err != nil {
-		response := helper.APIResponse(err.Error(), http.StatusUnprocessableEntity, nil)
-		c.JSON(http.StatusUnprocessableEntity, response)
+		errors := helper.APIError(err)
+		errorMessage := gin.H{"error": errors}
+		response := helper.APIResponse("error", "Bad Request", http.StatusBadGateway, errorMessage)
+		c.JSON(http.StatusBadGateway, response)
+		return
+	}
+
+	checkAcc, err := s.userSerivce.CountUser("email", input.Email)
+	if err != nil {
+		response := helper.APIResponse("error", "Server error", http.StatusBadGateway, err)
+		c.JSON(http.StatusBadGateway, response)
+		return
+	}
+	// fmt.Println(checkAc)
+	// fmt.Println(input.Email)
+	if !checkAcc {
+		response := helper.APIResponse("error", "Email has been registered", http.StatusBadRequest, nil)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	newUser, err := s.userSerivce.RegisterUser(input)
 	if err != nil {
-		response := helper.APIResponse("Error Data 2", http.StatusBadRequest, input)
-		c.JSON(http.StatusBadRequest, response)
+		errors := helper.APIError(err)
+		errorMessage := gin.H{"error": errors}
+		response := helper.APIResponse("error", "Server error", http.StatusBadGateway, errorMessage)
+		c.JSON(http.StatusBadGateway, response)
 		return
 	}
-	response := helper.APIResponse("Mantap anjeng", http.StatusOK, newUser)
+	response := helper.APIResponse("success", "Account has been registered", http.StatusOK, newUser)
 	c.JSON(http.StatusOK, response)
 }
 
 func (s *userHandler) GetUsers(c *gin.Context) {
 	getAll, err := s.userSerivce.GetAllUser()
 	if err != nil {
-		response := helper.APIResponse("fail API", http.StatusBadRequest, nil)
+		response := helper.APIResponse("error", "Server error", http.StatusBadRequest, nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	response := helper.APIResponse("success API", http.StatusOK, getAll)
+	response := helper.APIResponse("success", "Users Account", http.StatusOK, getAll)
 	c.JSON(http.StatusOK, response)
 }
 
 func (s *userHandler) NotFound(c *gin.Context) {
-	response := helper.APIResponse("fail API", http.StatusNotFound, nil)
+	response := helper.APIResponse("error", "Not Found Route", http.StatusNotFound, nil)
 	c.JSON(http.StatusNotFound, response)
-}
-
-func (s *userHandler) Erorpokoe(c *gin.Context) {
-	c.Next()
-	errorToPrint := c.Errors.ByType(gin.ErrorTypePublic).Last()
-	if errorToPrint != nil {
-		c.JSON(500, gin.H{
-			"status":  500,
-			"message": errorToPrint.Error(),
-		})
-	}
 }
