@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 	"simple-api-go-c0rz/helper"
 
@@ -16,8 +17,47 @@ func Controllers(userSerivce Service) *userHandler {
 
 }
 
-func (s *userHandler) RegisUser(c *gin.Context) {
-	var input RegisterUserInput
+func (s *userHandler) UpdateUsers(c *gin.Context) {
+	var input EditInput
+
+	idUser := c.Param("id")
+
+	err := c.Bind(&input)
+	if err != nil {
+		response := helper.APIResponse("error", "Bad Request", http.StatusBadGateway, err.Error())
+		c.JSON(http.StatusBadGateway, response)
+		return
+	}
+
+	checkAcc, err := s.userSerivce.CountUser("id", idUser)
+	if err != nil {
+		response := helper.APIResponse("error", "Server error", http.StatusBadGateway, err)
+		c.JSON(http.StatusBadGateway, response)
+		return
+	}
+
+	if checkAcc {
+		response := helper.APIResponse("error", "Email has been registered", http.StatusBadRequest, nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	mantap, err := s.userSerivce.UpdateUser(idUser, input)
+	if err != nil {
+		errors := helper.APIError(err)
+		errorMessage := gin.H{"error": errors}
+		response := helper.APIResponse("error", "Bad Request", http.StatusBadGateway, errorMessage)
+		c.JSON(http.StatusBadGateway, response)
+		return
+	}
+	fmt.Println(input)
+	fmt.Println(idUser)
+	fmt.Println(mantap)
+	response := helper.APIResponse("success", "update", http.StatusOK, nil)
+	c.JSON(http.StatusOK, response)
+}
+
+func (s *userHandler) RegisterUsers(c *gin.Context) {
+	var input UserInput
 
 	err := c.Bind(&input)
 

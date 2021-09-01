@@ -6,6 +6,7 @@ type Models interface {
 	GetAll() ([]User, error)
 	Insert(user User) (User, error)
 	Search(kolom string, data string) (User, error)
+	Update(user User) (User, error)
 }
 
 type models struct {
@@ -15,6 +16,16 @@ type models struct {
 func ConnectDB(db *gorm.DB) *models {
 	db.AutoMigrate(&User{})
 	return &models{db}
+}
+
+func (r *models) Update(user User) (User, error) {
+	err := r.db.Save(&user).Error
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 func (r *models) Search(kolom string, data string) (User, error) {

@@ -28,7 +28,8 @@ func main() {
 	api := router.Group("/api/v1")
 
 	api.GET("/list", userControllers.GetUsers)
-	api.POST("/create", userControllers.RegisUser)
+	api.POST("/create", userControllers.RegisterUsers)
+	api.PATCH("/update/:id", userControllers.UpdateUsers)
 
 	router.Run(":8080")
 }

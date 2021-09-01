@@ -12,8 +12,16 @@ type User struct {
 	CreatedAt time.Time
 }
 
-type RegisterUserInput struct {
-	Name     string `json:"name" binding:"required"`
+type UserInput struct {
+	ID       int
+	Nama     string `json:"nama" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
+}
+
+type EditInput struct {
+	ID       int
+	Nama     string `json:"name"`
+	Email    string `json:"email" binding:"email"`
+	Password string `json:"password"`
 }

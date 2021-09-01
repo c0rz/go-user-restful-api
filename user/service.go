@@ -4,8 +4,9 @@ import "golang.org/x/crypto/bcrypt"
 
 type Service interface {
 	GetAllUser() ([]User, error)
-	RegisterUser(input RegisterUserInput) (User, error)
+	RegisterUser(input UserInput) (User, error)
 	CountUser(kolom string, data string) (bool, error)
+	UpdateUser(id string, input EditInput) (User, error)
 }
 
 type service struct {
@@ -16,9 +17,33 @@ func NewService(models Models) *service {
 	return &service{models}
 }
 
-func (s *service) RegisterUser(input RegisterUserInput) (User, error) {
+func (s *service) UpdateUser(id string, input EditInput) (User, error) {
+	user, err := s.models.Search("id", id)
+	if err != nil {
+		return user, err
+	}
+	if input.Nama != "" {
+		user.Nama = input.Nama
+	}
+	if input.Email != "" {
+		user.Email = input.Email
+	}
+	if input.Password != "" {
+		user.Password = input.Password
+	}
+	// user.
+
+	updatedUser, err := s.models.Update(user)
+	if err != nil {
+		return updatedUser, err
+	}
+
+	return updatedUser, nil
+}
+
+func (s *service) RegisterUser(input UserInput) (User, error) {
 	user := User{}
-	user.Nama = input.Name
+	user.Nama = input.Nama
 	user.Email = input.Email
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
