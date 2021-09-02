@@ -9,7 +9,7 @@ This is a simple tutorial or example to create a simple RESTful API with Go usin
 go get github.com/c0rz/go-user-restful-api
 ```
 
-Before running API server, you should set the database config with yours or set the your database config with my values on [main.go](https://github.com/c0rz/go-user-restful-api/blob/main/main.go)
+Before running API server, you should set the database config with yours or set the your database config with my values on [main.go](https://github.com/c0rz/go-user-restful-api/blob/main/main.go#L15)
 ```go
 connect := "root:@tcp(127.0.0.1:3306)/golangdatabase?charset=utf8mb4&parseTime=True&loc=Local"
 ```
