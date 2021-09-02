@@ -38,7 +38,12 @@ func (s *service) UpdateUser(id string, input EditInput) (User, error) {
 		user.Email = input.Email
 	}
 	if input.Password != "" {
-		user.Password = input.Password
+		passwordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
+		if err != nil {
+			return user, err
+		}
+
+		user.Password = string(passwordHash)
 	}
 	// user.
 
