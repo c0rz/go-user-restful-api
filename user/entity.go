@@ -22,6 +22,6 @@ type UserInput struct {
 type EditInput struct {
 	ID       int
 	Nama     string `json:"name"`
-	Email    string `json:"email" binding:"email"`
+	Email    string `json:"email,omitempty" binding:"email"`
 	Password string `json:"password"`
 }

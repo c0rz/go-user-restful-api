@@ -30,6 +30,7 @@ func main() {
 	api.GET("/list", userControllers.GetUsers)
 	api.POST("/create", userControllers.RegisterUsers)
 	api.PATCH("/update/:id", userControllers.UpdateUsers)
+	api.DELETE("/delete/:id", userControllers.DeleteUser)
 
 	router.Run(":8080")
 }

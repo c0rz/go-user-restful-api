@@ -7,6 +7,7 @@ type Models interface {
 	Insert(user User) (User, error)
 	Search(kolom string, data string) (User, error)
 	Update(user User) (User, error)
+	Delete(id string) error
 }
 
 type models struct {
@@ -16,6 +17,14 @@ type models struct {
 func ConnectDB(db *gorm.DB) *models {
 	db.AutoMigrate(&User{})
 	return &models{db}
+}
+
+func (r *models) Delete(id string) error {
+	error := r.db.Delete(&User{}, id).Error
+	if error != nil {
+		return error
+	}
+	return nil
 }
 
 func (r *models) Update(user User) (User, error) {

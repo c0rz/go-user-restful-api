@@ -7,6 +7,7 @@ type Service interface {
 	RegisterUser(input UserInput) (User, error)
 	CountUser(kolom string, data string) (bool, error)
 	UpdateUser(id string, input EditInput) (User, error)
+	DeleteUser(id string) error
 }
 
 type service struct {
@@ -15,6 +16,14 @@ type service struct {
 
 func NewService(models Models) *service {
 	return &service{models}
+}
+
+func (s *service) DeleteUser(id string) error {
+	delete := s.models.Delete(id)
+	if delete != nil {
+		return delete
+	}
+	return nil
 }
 
 func (s *service) UpdateUser(id string, input EditInput) (User, error) {

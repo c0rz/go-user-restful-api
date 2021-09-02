@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
 	"simple-api-go-c0rz/helper"
 
@@ -15,6 +14,37 @@ type userHandler struct {
 func Controllers(userSerivce Service) *userHandler {
 	return &userHandler{userSerivce}
 
+}
+
+func (s *userHandler) DeleteUser(c *gin.Context) {
+
+	idUser := c.Param("id")
+
+	checkAcc, err := s.userSerivce.CountUser("id", idUser)
+	if err != nil {
+		response := helper.APIResponse("error", "Server error", http.StatusBadGateway, err)
+		c.JSON(http.StatusBadGateway, response)
+		return
+	}
+
+	if checkAcc {
+		response := helper.APIResponse("error", "User not found", http.StatusBadRequest, nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	err = s.userSerivce.DeleteUser(idUser)
+	if err != nil {
+		errors := helper.APIError(err)
+		errorMessage := gin.H{"error": errors}
+		response := helper.APIResponse("error", "Bad Request", http.StatusBadGateway, errorMessage)
+		c.JSON(http.StatusBadGateway, response)
+		return
+	}
+	// fmt.Println(input)
+	// fmt.Println(idUser)
+	// fmt.Println(mantap)
+	response := helper.APIResponse("success", "Delete user", http.StatusOK, nil)
+	c.JSON(http.StatusOK, response)
 }
 
 func (s *userHandler) UpdateUsers(c *gin.Context) {
@@ -37,11 +67,11 @@ func (s *userHandler) UpdateUsers(c *gin.Context) {
 	}
 
 	if checkAcc {
-		response := helper.APIResponse("error", "Email has been registered", http.StatusBadRequest, nil)
+		response := helper.APIResponse("error", "User not found", http.StatusBadRequest, nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	mantap, err := s.userSerivce.UpdateUser(idUser, input)
+	_, err = s.userSerivce.UpdateUser(idUser, input)
 	if err != nil {
 		errors := helper.APIError(err)
 		errorMessage := gin.H{"error": errors}
@@ -49,10 +79,10 @@ func (s *userHandler) UpdateUsers(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, response)
 		return
 	}
-	fmt.Println(input)
-	fmt.Println(idUser)
-	fmt.Println(mantap)
-	response := helper.APIResponse("success", "update", http.StatusOK, nil)
+	// fmt.Println(input)
+	// fmt.Println(idUser)
+	// fmt.Println(mantap)
+	response := helper.APIResponse("success", "Update user", http.StatusOK, nil)
 	c.JSON(http.StatusOK, response)
 }
 
